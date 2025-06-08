@@ -12,13 +12,11 @@
       padding: 0;
       text-align: center;
     }
-
     h1 {
       color: #ff6699;
       padding: 10px;
       font-size: 6vw;
     }
-
     #category-buttons, #controls {
       display: flex;
       flex-wrap: wrap;
@@ -26,7 +24,6 @@
       gap: 8px;
       margin: 10px;
     }
-
     .category-btn, #controls button {
       font-size: 4vw;
       padding: 8px 12px;
@@ -36,12 +33,10 @@
       cursor: pointer;
       flex: 1 0 auto;
     }
-
     .category-btn.active {
       background-color: #ff99aa;
       color: white;
     }
-
     #part-options {
       display: flex;
       flex-wrap: wrap;
@@ -49,7 +44,6 @@
       gap: 8px;
       margin: 10px;
     }
-
     #part-options img {
       width: 18vw;
       max-width: 80px;
@@ -57,11 +51,9 @@
       border: 2px solid transparent;
       cursor: pointer;
     }
-
     #part-options img:hover {
       border-color: #ff6699;
     }
-
     #canvas {
       position: relative;
       width: 100%;
@@ -71,15 +63,16 @@
       background: white;
       border: 4px dashed #ffaacc;
       touch-action: none;
+      overflow: hidden;
     }
-
     .part {
       position: absolute;
       width: 20vw;
       max-width: 80px;
       touch-action: none;
+      user-select: none;
+      -webkit-user-drag: none;
     }
-
     .selected {
       outline: 2px solid #66ccff;
     }
@@ -87,11 +80,9 @@
 </head>
 <body>
   <h1>ケーキデコレーション🎂</h1>
-
   <div id="category-buttons"></div>
   <div id="part-options"></div>
   <div id="canvas"></div>
-
   <div id="controls" style="display:none;">
     <button onclick="resizeSelected(1.2)">＋拡大</button>
     <button onclick="resizeSelected(0.8)">－縮小</button>
@@ -116,7 +107,6 @@
     const basePath = 'images/';
     let selectedPart = null;
     const transformState = new Map();
-
     const categoryButtons = document.getElementById('category-buttons');
     const partOptions = document.getElementById('part-options');
     const canvas = document.getElementById('canvas');
@@ -167,6 +157,11 @@
       canvas.appendChild(img);
 
       img.addEventListener('click', (e) => {
+        e.stopPropagation();
+        selectPart(img);
+      });
+
+      img.addEventListener('touchend', (e) => {
         e.stopPropagation();
         selectPart(img);
       });
@@ -238,6 +233,12 @@
     function makeDraggable(el) {
       let isDragging = false, offsetX, offsetY;
 
+      const move = (x, y) => {
+        const rect = canvas.getBoundingClientRect();
+        el.style.left = `${x - rect.left - offsetX}px`;
+        el.style.top = `${y - rect.top - offsetY}px`;
+      };
+
       el.addEventListener('mousedown', e => {
         isDragging = true;
         offsetX = e.offsetX;
@@ -246,10 +247,7 @@
       });
       document.addEventListener('mouseup', () => isDragging = false);
       document.addEventListener('mousemove', e => {
-        if (!isDragging) return;
-        const rect = canvas.getBoundingClientRect();
-        el.style.left = `${e.clientX - rect.left - offsetX}px`;
-        el.style.top = `${e.clientY - rect.top - offsetY}px`;
+        if (isDragging) move(e.clientX, e.clientY);
       });
 
       el.addEventListener('touchstart', e => {
@@ -259,15 +257,14 @@
         offsetX = touch.clientX - rect.left;
         offsetY = touch.clientY - rect.top;
         e.preventDefault();
-      });
+      }, { passive: false });
       document.addEventListener('touchend', () => isDragging = false);
       document.addEventListener('touchmove', e => {
         if (!isDragging) return;
         const touch = e.touches[0];
-        const rect = canvas.getBoundingClientRect();
-        el.style.left = `${touch.clientX - rect.left - offsetX}px`;
-        el.style.top = `${touch.clientY - rect.top - offsetY}px`;
-      });
+        move(touch.clientX, touch.clientY);
+        e.preventDefault();
+      }, { passive: false });
     }
 
     canvas.addEventListener('click', () => {
