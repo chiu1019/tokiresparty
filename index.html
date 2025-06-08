@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ スマホ対応 -->
   <title>ケーキデコレーションゲーム</title>
   <style>
     body {
@@ -13,13 +14,18 @@
     h1 {
       color: #ff6699;
       padding: 10px;
+      font-size: 5vw;
     }
-    #category-buttons {
-      margin: 10px 0;
+    #category-buttons, #controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      margin: 10px;
     }
-    .category-btn {
-      padding: 6px 12px;
-      margin: 4px;
+    .category-btn, #controls button {
+      padding: 10px 14px;
+      font-size: 4vw;
       border-radius: 6px;
       border: none;
       background-color: #ffccdd;
@@ -30,7 +36,8 @@
       color: white;
     }
     #part-options img {
-      width: 60px;
+      width: 16vw;
+      max-width: 80px;
       margin: 5px;
       cursor: pointer;
       border: 2px solid transparent;
@@ -40,39 +47,28 @@
     }
     #canvas {
       position: relative;
-      width: 500px;
-      height: 500px;
+      width: 90vw;
+      max-width: 400px;
+      height: 480px;
       margin: 20px auto;
       background: white;
       border: 4px dashed #ffaacc;
+      touch-action: none;
     }
     .part {
       position: absolute;
-      width: 80px;
+      width: 20vw;
+      max-width: 80px;
       cursor: move;
       touch-action: none;
     }
     .selected {
       outline: 2px solid #66ccff;
     }
-    #controls {
-      margin-top: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    #controls button {
-      padding: 6px 12px;
-      margin: 4px;
-      font-size: 14px;
-      border: none;
-      border-radius: 6px;
-      background-color: #ffccdd;
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
-  <h1>【企画名】</h1>
+  <h1>ケーキデコレーション🎂</h1>
 
   <div id="category-buttons"></div>
   <div id="part-options"></div>
@@ -81,8 +77,8 @@
   <div id="controls" style="display:none;">
     <button onclick="resizeSelected(1.2)">＋拡大</button>
     <button onclick="resizeSelected(0.8)">－縮小</button>
-    <button onclick="rotateSelected(-10)">↺左回転</button>
-    <button onclick="rotateSelected(10)">↻右回転</button>
+    <button onclick="rotateSelected(-15)">↺左回転</button>
+    <button onclick="rotateSelected(15)">↻右回転</button>
     <button onclick="flipSelected()">⇋反転</button>
     <button onclick="deleteSelected()">🗑削除</button>
     <button onclick="moveForward()">⬆前面</button>
@@ -209,9 +205,7 @@
     function moveBackward() {
       if (!selectedPart) return;
       const current = parseInt(selectedPart.style.zIndex) || 1;
-      if (current > 1) {
-        selectedPart.style.zIndex = current - 1;
-      }
+      if (current > 1) selectedPart.style.zIndex = current - 1;
     }
 
     function saveImage() {
