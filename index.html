@@ -83,15 +83,19 @@
       }
       .category-btn, #controls button {
         font-size: 14px;
-        padding: 6px 12px;
-        flex: 1 0 auto;
+        padding: 6px 10px;
+        flex: 0 1 auto;
         max-width: 120px;
+      }
+      #controls {
+        flex-wrap: wrap;
+        display: flex !important;
       }
     }
   </style>
 </head>
 <body>
-  <h1>ケーキデコレーション2</h1>
+  <h1>企画🎂</h1>
   <div id="category-buttons"></div>
   <div id="part-options"></div>
   <div id="canvas"></div>
@@ -109,7 +113,138 @@
 
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script>
-    // [JS 部分は変更なしのため省略]
+    const parts = {
+      '土台': ['dodai1.png','dodai2.png','dodai3.png','dodai4.png','dodai5.png','dodai6.png'],
+      '小物': ['dumbbel1.png','dumbbel2.png','dumbbel3.png','dumbbel4.png','fuwa1.png','fuwa2.png','hat1.png','hat2.png','heart1.png','heart2.png','heart3.png','music1.png','music2.png','music3.png','rainbow.png','star1.png','star2.png','star3.png'],
+      'プレート': ['plate1.png','plate2.png','plate3.png'],
+      'キャンドル': ['candle1.png','candle2.png','candle3.png','candle4.png']
+    };
+
+    const categoryButtons = document.getElementById("category-buttons");
+    const partOptions = document.getElementById("part-options");
+    const canvas = document.getElementById("canvas");
+    const controls = document.getElementById("controls");
+
+    let selectedPart = null;
+
+    for (let category in parts) {
+      const btn = document.createElement("button");
+      btn.className = "category-btn";
+      btn.textContent = category;
+      btn.onclick = () => {
+        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        showParts(category);
+      };
+      categoryButtons.appendChild(btn);
+    }
+
+    function showParts(category) {
+      partOptions.innerHTML = "";
+      parts[category].forEach(imgName => {
+        const img = document.createElement("img");
+        img.src = "images/" + imgName;
+        img.onclick = () => addPart(img.src);
+        partOptions.appendChild(img);
+      });
+    }
+
+    function addPart(src) {
+      const img = document.createElement("img");
+      img.src = src;
+      img.className = "part";
+      img.style.left = "150px";
+      img.style.top = "150px";
+      img.style.transform = "scale(1) rotate(0deg)";
+      img.setAttribute('data-scale', '1');
+      img.setAttribute('data-rotate', '0');
+      img.setAttribute('data-flip', '1');
+
+      img.addEventListener("pointerdown", startDrag);
+      canvas.appendChild(img);
+    }
+
+    function startDrag(e) {
+      if (selectedPart) selectedPart.classList.remove("selected");
+      selectedPart = e.target;
+      selectedPart.classList.add("selected");
+      controls.style.display = "flex";
+
+      let shiftX = e.clientX - selectedPart.getBoundingClientRect().left;
+      let shiftY = e.clientY - selectedPart.getBoundingClientRect().top;
+
+      function moveAt(clientX, clientY) {
+        const canvasRect = canvas.getBoundingClientRect();
+        selectedPart.style.left = (clientX - canvasRect.left - shiftX) + "px";
+        selectedPart.style.top = (clientY - canvasRect.top - shiftY) + "px";
+      }
+
+      function onPointerMove(e) {
+        moveAt(e.clientX, e.clientY);
+      }
+
+      document.addEventListener("pointermove", onPointerMove);
+
+      document.onpointerup = function() {
+        document.removeEventListener("pointermove", onPointerMove);
+        document.onpointerup = null;
+      };
+    }
+
+    function resizeSelected(scaleFactor) {
+      if (!selectedPart) return;
+      let scale = parseFloat(selectedPart.getAttribute('data-scale')) * scaleFactor;
+      selectedPart.setAttribute('data-scale', scale);
+      applyTransform();
+    }
+
+    function rotateSelected(deg) {
+      if (!selectedPart) return;
+      let rotate = parseFloat(selectedPart.getAttribute('data-rotate')) + deg;
+      selectedPart.setAttribute('data-rotate', rotate);
+      applyTransform();
+    }
+
+    function flipSelected() {
+      if (!selectedPart) return;
+      let flip = parseFloat(selectedPart.getAttribute('data-flip')) * -1;
+      selectedPart.setAttribute('data-flip', flip);
+      applyTransform();
+    }
+
+    function applyTransform() {
+      if (!selectedPart) return;
+      let scale = selectedPart.getAttribute('data-scale');
+      let rotate = selectedPart.getAttribute('data-rotate');
+      let flip = selectedPart.getAttribute('data-flip');
+      selectedPart.style.transform = `scale(${flip * scale}, ${scale}) rotate(${rotate}deg)`;
+    }
+
+    function deleteSelected() {
+      if (!selectedPart) return;
+      canvas.removeChild(selectedPart);
+      selectedPart = null;
+      controls.style.display = "none";
+    }
+
+    function moveForward() {
+      if (!selectedPart) return;
+      canvas.appendChild(selectedPart);
+    }
+
+    function moveBackward() {
+      if (!selectedPart) return;
+      canvas.insertBefore(selectedPart, canvas.firstChild);
+    }
+
+    function saveImage() {
+      html2canvas(canvas).then(canvasImage => {
+        const link = document.createElement('a');
+        link.download = 'cake.png';
+        link.href = canvasImage.toDataURL();
+        link.click();
+      });
+    }
   </script>
 </body>
 </html>
