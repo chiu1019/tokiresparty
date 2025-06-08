@@ -2,52 +2,69 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ スマホ対応 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ケーキデコレーションゲーム</title>
   <style>
     body {
       font-family: sans-serif;
       background: #d6ecff;
-      text-align: center;
       margin: 0;
+      padding: 0;
+      text-align: center;
     }
+
     h1 {
       color: #ff6699;
       padding: 10px;
-      font-size: 5vw;
+      font-size: 6vw;
     }
+
     #category-buttons, #controls {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 6px;
+      gap: 8px;
       margin: 10px;
     }
+
     .category-btn, #controls button {
-      padding: 10px 14px;
       font-size: 4vw;
-      border-radius: 6px;
+      padding: 8px 12px;
       border: none;
+      border-radius: 8px;
       background-color: #ffccdd;
       cursor: pointer;
+      flex: 1 0 auto;
     }
+
     .category-btn.active {
       background-color: #ff99aa;
       color: white;
     }
-    #part-options img {
-      width: 16vw;
-      max-width: 80px;
-      margin: 5px;
-      cursor: pointer;
-      border: 2px solid transparent;
+
+    #part-options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin: 10px;
     }
+
+    #part-options img {
+      width: 18vw;
+      max-width: 80px;
+      height: auto;
+      border: 2px solid transparent;
+      cursor: pointer;
+    }
+
     #part-options img:hover {
       border-color: #ff6699;
     }
+
     #canvas {
       position: relative;
-      width: 90vw;
+      width: 100%;
       max-width: 400px;
       height: 480px;
       margin: 20px auto;
@@ -55,13 +72,14 @@
       border: 4px dashed #ffaacc;
       touch-action: none;
     }
+
     .part {
       position: absolute;
       width: 20vw;
       max-width: 80px;
-      cursor: move;
       touch-action: none;
     }
+
     .selected {
       outline: 2px solid #66ccff;
     }
