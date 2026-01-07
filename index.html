@@ -29,7 +29,7 @@
       padding: 8px 12px;
       border: none;
       border-radius: 8px;
-      background-color: #ffccdd;
+      background-color: #f5df53;
       cursor: pointer;
       flex: 1 0 auto;
     }
@@ -144,7 +144,7 @@
       partOptions.innerHTML = "";
       parts[category].forEach(imgName => {
         const img = document.createElement("img");
-        img.src = "images/" + imgName;
+        img.src = "images/kyoya" + imgName;
         img.onclick = () => addPart(img.src);
         partOptions.appendChild(img);
       });
@@ -249,6 +249,7 @@
   </script>
 </body>
 </html>
+
 
 
 
