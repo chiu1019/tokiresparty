@@ -115,8 +115,8 @@
   <script>
     const parts = {
       '土台': ['dodai1.png','dodai3.png','dodai4.png','dodai6.png','dodai7.png','dodai8.png'],
-      '小物1': ['hat1.png','hat2.png','hat3.png','heart1.png','heart2.png','heart3.png','heart4.png','music1.png','music2.png','music3.png','music4.png','rainbow.png','star1.png','star2.png','star3.png'],
-      '小物2': ['cookie1.png','cookie2.png','guitar.png','purokion.png','purokion2.png','cheese.png','cake2.png'],
+      '小物1': ['hat2.png','hat3.png','heart1.png','heart2.png','heart4.png','music1.png','music2.png','music3.png','music4.png','rainbow.png','star1.png','star2.png','star3.png'],
+      '小物2': ['cookie1.png','cookie2.png','hamburger.png','potato.png','present1.png','present2.png'],
       'プレート': ['plate1.png','plate2.png','plate3.png'],
       'キャンドル': ['candle1.png','candle2.png','candle3.png','candle4.png']
     };
@@ -144,7 +144,7 @@
       partOptions.innerHTML = "";
       parts[category].forEach(imgName => {
         const img = document.createElement("img");
-        img.src = "images/kyoya" + imgName;
+        img.src = "images/" + imgName;
         img.onclick = () => addPart(img.src);
         partOptions.appendChild(img);
       });
@@ -249,6 +249,7 @@
   </script>
 </body>
 </html>
+
 
 
 
